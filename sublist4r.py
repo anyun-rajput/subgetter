@@ -277,8 +277,9 @@ class GoogleEnum(enumratorBaseThreaded):
         return
 
     def extract_domains(self, resp):
+        
+        link_regx = re.compile('<cite class="iUh30 tjvcx" role="text">(.*?)<\/cite>')
         links_list = list()
-        link_regx = re.compile('<cite.*?>(.*?)<\/cite>')
         try:
             links_list = link_regx.findall(resp)
             for link in links_list:
@@ -327,7 +328,10 @@ class YahooEnum(enumratorBaseThreaded):
         return
 
     def extract_domains(self, resp):
-        link_regx2 = re.compile('<span class=" fz-.*? fw-m fc-12th wr-bw.*?">(.*?)</span>')
+        link_regx2 = re.compile('<div style="visibility:hidden;"class="d-ib p-abs t-0 l-0 fz-14 lh-20 fc-obsidian wr-bw ls-n pb-4"><span>(.*?)</span>')
+        
+        #<span class=" d-ib p-abs t-0 l-0 fz-14 lh-20 fc-obsidian wr-bw ls-n pb-4">tools.<b>google</b>.<b>com</b></span>
+        #<span class=" d-ib p-abs t-0 l-0 fz-14 lh-20 fc-obsidian wr-bw ls-n pb-4">www.<b>google</b>.<b>com</b></span>
         link_regx = re.compile('<span class="txt"><span class=" cite fw-xl fz-15px">(.*?)</span>')
         links_list = []
         try:
@@ -364,6 +368,7 @@ class YahooEnum(enumratorBaseThreaded):
         else:
             query = "site:{domain}".format(domain=self.domain)
         return query
+  
 
 
 class AskEnum(enumratorBaseThreaded):
@@ -379,7 +384,7 @@ class AskEnum(enumratorBaseThreaded):
 
     def extract_domains(self, resp):
         links_list = list()
-        link_regx = re.compile('<p class="web-result-url">(.*?)</p>')
+        link_regx = re.compile('<div class="PartialSearchResults-item-url">(.*?)</div>')
         try:
             links_list = link_regx.findall(resp)
             for link in links_list:
@@ -470,7 +475,9 @@ class BaiduEnum(enumratorBaseThreaded):
         links = list()
         found_newdomain = False
         subdomain_list = []
-        link_regx = re.compile('<a.*?class="c-showurl".*?>(.*?)</a>')
+        link_regx = re.compile('<span class="c-color-gray" aria-hidden="true">(.*?)</span>')
+        
+   
         try:
             links = link_regx.findall(resp)
             for link in links:
@@ -538,6 +545,7 @@ class NetcraftEnum(enumratorBaseThreaded):
 
     def get_next(self, resp):
         link_regx = re.compile('<a.*?href="(.*?)">Next Page')
+        
         link = link_regx.findall(resp)
         url = 'http://searchdns.netcraft.com' + link[0]
         return url
@@ -574,6 +582,7 @@ class NetcraftEnum(enumratorBaseThreaded):
     def extract_domains(self, resp):
         links_list = list()
         link_regx = re.compile('<a class="results-table__host" href="(.*?)"')
+        
         try:
             links_list = link_regx.findall(resp)
             for link in links_list:
